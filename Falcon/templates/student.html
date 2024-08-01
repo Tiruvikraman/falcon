@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLearn - AI-Powered Education Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #4e54c8;
+            --secondary-color: #8f94fb;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            background-color: rgba(255,255,255,0.2);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-bar input:focus {
+            background-color: rgba(255,255,255,0.3);
+            outline: none;
+        }
+
+        .ai-tools {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ai-tools i {
+            font-size: 20px;
+            margin-left: 15px;
+            cursor: pointer;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .ai-tools i:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .points-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-right: 20px;
+            background-color: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-bar {
+            background-color: #fff;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-bar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-bar li {
+            margin: 0 15px;
+        }
+
+        .nav-bar a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-bar a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 25px 0;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://source.unsplash.com/random/1600x900?education') no-repeat center center;
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background-color: #ff4757;
+            transform: translateY(-3px);
+        }
+
+        .categories, .features, .learning-section {
+            padding: 60px 0;
+            background-color: #fff;
+            margin: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .category-list, .feature-grid, .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .category-item, .feature-card, .learning-item {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-item:hover, .feature-card:hover, .learning-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+}
+
+.feature-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.feature-card img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    margin: 10px 0;
+}
+
+.feature-card p {
+    margin: 10px 0 20px;
+}
+
+.feature-card .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .footer-section h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #fff;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            color: #fff;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.2);
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            margin-top: 30px;
+            text-align: center;
+            color: #ccc;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        .performance-graph {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f4f8;
+    border-radius: 10px;
+}
+
+#performanceChart {
+    width: 100%;
+    height: 300px;
+}
+/* Existing styles... */
+
+/* Profile Sidebar Styles */
+.profile-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease-out;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.profile-sidebar.active {
+    right: 0;
+}
+
+@media (min-width: 768px) {
+    .profile-sidebar {
+        width: 50%;
+    }
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.profile-info {
+    background-color: #f0f4f8;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.subjects ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.subjects li {
+    background-color: #e6f3ff;
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.performance-graph {
+    margin-top: 20px;
+}
+
+#performanceChart {
+    width: 100%;
+    height: 200px;
+}
+
+/* Ensure the profile icon is clickable */
+.profile-icon {
+    cursor: pointer;
+}
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.welcome-message {
+    align-self: flex-start;
+    margin-bottom: 20px;
+}
+
+.welcome-message h2 {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.welcome-message p {
+    font-size: 16px;
+}
+
+.hero h1 {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.hero > p {
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">SmartLearn</div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for anything">
+                    <div class="ai-tools">
+                        <i class="fas fa-camera" title="Photo Question Answering"></i>
+                        <i class="fas fa-brain" title="AI Tutor"></i>
+                        <i class="fas fa-robot" title="AI Assistant"></i>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <a href="{{ url_for('student_reward_points') }}" class="points-display">1500 pts</a>
+                    <div class="profile-icon" id="profile-icon">A</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="{{ url_for('student') }}">Home</a></li>
+            <li><a href="{{ url_for('homework') }}">Homework</a></li>
+            <li><a href="{{ url_for('student_courses') }}">Courses</a></li>
+            <li><a href="{{ url_for('speak') }}">Speak With AI</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content fade-in">
+                <div class="welcome-message">
+                    <h2>Welcome, Albert</h2>
+                    <p>Ready to continue your learning journey?</p>
+                </div>
+                <h1>Revolutionize Your Learning with AI</h1>
+                <p>Unlock your potential with our cutting-edge AI education platform</p>
+                <a href="#" class="btn">Start Learning Now</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="container">
+            <h2>Top Categories</h2>
+            <div class="category-list">
+                <div class="category-item">Math</div>
+                <div class="category-item">Science</div>
+                <div class="category-item">Language Arts</div>
+                <div class="category-item">History</div>
+                <div class="category-item">Computer Science</div>
+                <div class="category-item">Foreign Languages</div>
+                <div class="category-item">Test Prep</div>
+                <div class="category-item">Arts & Music</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="learning-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Continue your learning journey</h2>
+                <a href="#" class="my-learning">My learning</a>
+            </div>
+            <div class="learning-grid">
+                
+                <a  href="{{ url_for('student_courses') }}" class="learning-item">
+                    <img src="https://via.placeholder.com/300x160?text=Python+neural+network" alt="Python and Django">
+                    <div class="learning-content">
+                        <div class="learning-title">
+                            <span class="icon-play"></span>
+                            Python Neural network
+                        </div>
+                        <div class="learning-subtitle">48. Advanced  Models</div>
+                        <div class="learning-meta">Lecture • 15min</div>
+                    </div>
+                </a>
+                <a href="{{ url_for('homework') }}" class="learning-item">
+                    <img src="https://via.placeholder.com/300x160?text=AI+Quiz" alt="AI Quiz">
+                    <div class="learning-content">
+                        <div class="learning-title">
+                            <span class="icon-quiz"></span>
+                            AI-Generated Quiz
+                        </div>
+                        <div class="learning-subtitle">Test Your Knowledge</div>
+                        <div class="learning-meta">Quiz • 10 questions</div>
+                    </div>
+                </a>
+                <a  href="{{ url_for('student_courses') }}" class="learning-item">
+                    <img src="https://via.placeholder.com/300x160?text=Data+Science" alt="Data Science">
+                    <div class="learning-content">
+                        <div class="learning-title">
+                            <span class="icon-play"></span>
+                            Introduction to Data Science
+                        </div>
+                        <div class="learning-subtitle">2. Data Visualization Techniques</div>
+                        <div class="learning-meta">Lecture • 20min</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>AI-Powered Learning Tools</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <img src="https://via.placeholder.com/250x150?text=Quiz+Generation" alt="Quiz Generation">
+                    <h3>Quiz Generation</h3>
+                    <p>Create custom quizzes on any topic</p>
+                    <a href="/student_quiz" class="btn">Generate Quiz</a>
+                </div>
+                
+                <div class="feature-card">
+                    <img src="https://via.placeholder.com/250x150?text=Step-by-Step+Explanations" alt="Step-by-Step Explanations">
+                    <h3>Step-by-Step Explanations</h3>
+                    <p>Detailed solutions for complex problems</p>
+                    <a href="/student_stepexplanation" class="btn">Get Explanation</a>
+                </div>
+                <div class="feature-card">
+                    <img src="https://via.placeholder.com/250x150?text=AI+Tutor" alt="AI Tutor">
+                    <h3>AI Tutor</h3>
+                    <p>One-on-one tutoring with AI</p>
+                    <a href="/student_aitutor" class="btn">Start Session</a>
+                </div>
+                <div class="feature-card">
+                    <img src="https://via.placeholder.com/250x150?text=Study+Plans" alt="Personalized Study Plans">
+                    <h3>Personalized Study Plans</h3>
+                    <p>Tailored learning paths for your goals</p>
+                    <a href="/student_studyplans" class="btn">Create Plan</a>
+                </div>
+                <div class="feature-card">
+                    <img src="https://via.placeholder.com/250x150?text=Project+Ideas" alt="Project Idea Generator">
+                    <h3>Project Idea Generator</h3>
+                    <p>Get creative project suggestions based on your interests</p>
+                    <a href="/student_projectideas" class="btn">Generate Ideas</a>
+                </div>
+                <div class="feature-card">
+                    <img src="https://via.placeholder.com/250x150?text=PDF+Questions+%26+Answers" alt="PDF Questions & Answers">
+                    <h3>PDF Questions & Answers</h3>
+                    <p>Upload pdf solve doubts & questions</p>
+                    <a href="/student_pdfqa" class="btn">Upload PDF</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <div id="profile-sidebar" class="profile-sidebar">
+        <button id="close-profile" class="close-button">&times;</button>
+        
+        <div class="profile-header">
+            <img src="https://via.placeholder.com/150" alt="Student Avatar" class="avatar">
+            <h2>Albert</h2>
+            <p>Student ID: 845421</p>
+        </div>
+        
+        <div class="profile-info">
+            <p><strong>School:</strong> South International High School</p>
+            <p><strong>Date of Birth:</strong> January 15, 2006</p>
+            <p><strong>Email:</strong> albert12@gmail.com</p>
+        </div>
+        
+        <div class="subjects">
+            <h3>Interested Subjects</h3>
+            <ul>
+                <li>Mathematics</li>
+                <li>Computer Science</li>
+                <li>Physics</li>
+            </ul>
+            
+            <h3>Subjects Needing Improvement</h3>
+            <ul>
+                <li>History</li>
+                <li>Literature</li>
+            </ul>
+        </div>
+        
+        <div class="performance-graph">
+            <h3>Performance Analytics</h3>
+            <canvas id="performanceChart"></canvas>
+        </div>
+        <a href="{{ url_for('index') }}" style="color: #ff4757; text-align: center;" ><h2>Log out</h2></a>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About SmartLearn</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect with Us</h4>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">Facebook</a>
+                        <a href="#" class="social-icon">Twitter</a>
+                        <a href="#" class="social-icon">LinkedIn</a>
+                        <a href="#" class="social-icon">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 SmartLearn. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="static/profile.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileIcon = document.getElementById('profile-icon');
+            const profileSidebar = document.getElementById('profile-sidebar');
+            const closeProfile = document.getElementById('close-profile');
+        
+            profileIcon.addEventListener('click', function() {
+                profileSidebar.classList.add('active');
+            });
+        
+            closeProfile.addEventListener('click', function() {
+                profileSidebar.classList.remove('active');
+            });
+        });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const profileIcon = document.getElementById('profile-icon');
+                const profileSidebar = document.getElementById('profile-sidebar');
+                const closeProfile = document.getElementById('close-profile');
+            
+                profileIcon.addEventListener('click', function() {
+                    profileSidebar.classList.add('active');
+                    renderPerformanceChart();
+                });
+            
+                closeProfile.addEventListener('click', function() {
+                    profileSidebar.classList.remove('active');
+                });
+            
+                function renderPerformanceChart() {
+                    const ctx = document.getElementById('performanceChart').getContext('2d');
+                    
+                    // Sample data
+                    const data = {
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                        datasets: [{
+                            label: 'Performance Score',
+                            data: [65, 72, 68, 80, 75, 85],
+                            fill: false,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                            pointBackgroundColor: 'rgb(75, 192, 192)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(75, 192, 192)'
+                        }]
+                    };
+            
+                    const config = {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Weekly Performance'
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    title: {
+                                        display: true,
+                                        text: 'Score'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Week'
+                                    }
+                                }
+                            }
+                        }
+                    };
+            
+                    new Chart(ctx, config);
+                }
+            });
+            </script>
+</body>
+</html>

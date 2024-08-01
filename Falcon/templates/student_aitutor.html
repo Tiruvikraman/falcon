@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLearn - AI Tutor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chat-container {
+            max-width: fit-content;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .chat-input {
+            display: flex;
+            align-items: center;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: rgb(237, 222, 222);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .image-upload {
+            margin-right: 10px;
+        }
+        .image-upload input[type="file"] {
+            display: none;
+        }
+        .image-upload label {
+            cursor: pointer;
+            font-size: 20px;
+            color: #007bff;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: fit-content;
+        }
+        .user-message {
+            background-color: #bae5c4;
+            font-size:larger;
+
+        }
+        .ai-message {
+            background-color: #f0f0f0;
+            font-size:larger;
+        }
+        .message img {
+            max-width: fit-content;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+       
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://hashagile.com/wp-content/uploads/2022/02/ils_13.svg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2; 
+  z-index: -1;
+}
+    </style>
+</head>
+<body>
+    <div class="background-image"></div>
+    <div class="">
+        <button class="back-button" onclick="goBack()">Back</button>
+        <h1>AI Tutor</h1>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input" style="height: 50px; background-color:rgb(226, 228, 242) ;border-radius: 5px;border-color: black;box-shadow: 0 5px 15px rgba(5, 46, 74, 0.3); ">
+            <div class="image-upload">
+                <label for="image-file">
+                    <i class="fas fa-paperclip"></i>
+                </label>
+                <input type="file" id="image-file" accept="image/*">
+            </div>
+            <input type="text" id="user-input" placeholder="Ask your question...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div></div>
+
+    <script>
+        function sendMessage() {
+            const message = document.getElementById('user-input').value.trim();
+            if (message) {
+                addMessage(message, true);
+                document.getElementById('user-input').value = '';
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    addMessage(data.response, false);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function addMessage(content, isUser, imageUrl = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                messageDiv.appendChild(img);
+            }
+            
+            const textDiv = document.createElement('div');
+            textDiv.textContent = content;
+            messageDiv.appendChild(textDiv);
+            
+            document.getElementById('chat-messages').appendChild(messageDiv);
+            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+        }
+
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        document.getElementById('image-file').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    addMessage('Image uploaded', true, e.target.result);
+                }
+                reader.readAsDataURL(file);
+
+                const formData = new FormData();
+                formData.append('image-file', file);
+
+                fetch('/upload_image_for_ocr', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    addMessage(data.ai_response, false);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

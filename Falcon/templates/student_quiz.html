@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLearn - Quiz Generation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f5ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            background-color: #3498db;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .performance {
+            font-size: 24px;
+            color: #27ae60;
+            margin-bottom: 30px;
+        }
+        .areas-to-improve {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+        }
+        .areas-to-improve h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .areas-to-improve ol {
+            color: #34495e;
+            padding-left: 20px;
+        }
+        .areas-to-improve li {
+            margin-bottom: 10px;
+        }
+        .validation-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .validation-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #3498db;
+        }
+        .correct { color: green; }
+        .incorrect { color: red; }
+        #areas-to-improve { margin-top: 20px; }
+        .options li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .options li input {
+            margin-right: 10px;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="goBack()">Back</button>
+        <h1>Generate Your Custom Quiz</h1>
+        <form class="quiz-form">
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="topic">Topic:</label>
+                <input type="text" id="topic" name="topic" required>
+            </div>
+            <div class="form-group">
+                <label for="num-questions">Number of Questions:</label>
+                <select id="num-questions" name="num-questions">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="difficulty">Difficulty Level:</label>
+                <select id="difficulty" name="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Generate Quiz</button>
+        </form>
+
+        <div id="quiz-result" class="quiz-result" style="display: none;">
+            <!-- Quiz questions will be dynamically inserted here -->
+        </div>
+        <div id="validation-container" style="display: none;">
+            <div id="loader" class="loader"></div>
+            <div id="validation-text" class="validation-text">Validating...</div>
+        </div>
+        <div id="quiz-score" style="display: none;"></div>
+        <div id="areas-to-improve" style="display: none;"></div>
+    </div>
+
+    <script>
+        let quizData = [];
+
+        document.querySelector('.quiz-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = {
+                subject: formData.get('subject'),
+                topic: formData.get('topic'),
+                'num-questions': formData.get('num-questions'),
+                difficulty: formData.get('difficulty')
+            };
+            fetch('/generate_quiz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                quizData = parseQuizData(data.quiz);
+                showQuiz(quizData);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function parseQuizData(quizString) {
+            const questions = quizString.split('Question:').filter(q => q.trim() !== '');
+            return questions.map((question, index) => {
+                const [questionText, ...options] = question.split('\n').filter(line => line.trim() !== '');
+                const answerLine = options.pop();
+                const correctAnswer = parseInt(answerLine.split(':')[1].trim());
+                return {
+                    id: index + 1,
+                    text: questionText.trim(),
+                    options: options.map(opt => opt.replace('<<o>>', '').trim()),
+                    correctAnswer: correctAnswer,
+                    concept: questionText.match(/\[(.*?)\]/)[1]
+                };
+            });
+        }
+
+        function showQuiz(questions) {
+            const quizResult = document.getElementById('quiz-result');
+            let quizHtml = '<h2>Your Custom Quiz</h2>';
+
+            questions.forEach((question, index) => {
+                quizHtml += `
+                    <div class="question fade-in">
+                        <h3>${question.id}. ${question.text}</h3>
+                        <ul class="options">
+                `;
+
+                question.options.forEach((option, optionIndex) => {
+                    quizHtml += `
+                        <li>
+                            <input type="radio" name="q${index}" value="${optionIndex + 1}" id="q${index}o${optionIndex}">
+                            <label for="q${index}o${optionIndex}">${option}</label>
+                        </li>
+                    `;
+                });
+
+                quizHtml += `
+                        </ul>
+                    </div>
+                `;
+            });
+
+            quizHtml += '<button onclick="submitQuiz()" class="btn">Submit Quiz</button>';
+
+            quizResult.innerHTML = quizHtml;
+            quizResult.style.display = 'block';
+        }
+
+        function submitQuiz() {
+            const validationContainer = document.getElementById('validation-container');
+            const quizResult = document.getElementById('quiz-result');
+            const quizScore = document.getElementById('quiz-score');
+            const areasToImprove = document.getElementById('areas-to-improve');
+
+            quizResult.style.display = 'none';
+            validationContainer.style.display = 'block';
+
+            setTimeout(() => {
+                validationContainer.style.display = 'none';
+                const score = calculateScore();
+                displayResults(score);
+            }, 2000);
+        }
+
+        function calculateScore() {
+            let score = 0;
+            quizData.forEach((question, index) => {
+                const selectedAnswer = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selectedAnswer && parseInt(selectedAnswer.value) === question.correctAnswer) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        function displayResults(score) {
+            const quizScore = document.getElementById('quiz-score');
+            const areasToImprove = document.getElementById('areas-to-improve');
+
+            quizScore.innerHTML = `
+                <div class="score-circle">${score}/${quizData.length}</div>
+                <h3>You have scored</h3>
+                <p>Performance: ${getPerformanceEvaluation(score, quizData.length)}</p>
+            `;
+            quizScore.style.display = 'block';
+
+            let incorrectQuestions = quizData.filter((question, index) => {
+                const selectedAnswer = document.querySelector(`input[name="q${index}"]:checked`);
+                return !selectedAnswer || parseInt(selectedAnswer.value) !== question.correctAnswer;
+            });
+
+            if (incorrectQuestions.length > 0) {
+                let improveHtml = '<h3>Areas to be improved</h3><ol>';
+                incorrectQuestions.forEach(question => {
+                    improveHtml += `<li>${question.concept}</li>`;
+                });
+                improveHtml += '</ol>';
+                areasToImprove.innerHTML = improveHtml;
+                areasToImprove.style.display = 'block';
+            }
+        }
+
+        function getPerformanceEvaluation(score, total) {
+            const percentage = (score / total) * 100;
+            if (percentage >= 80) return 'Excellent';
+            if (percentage >= 60) return 'Good';
+            if (percentage >= 40) return 'Average';
+            return 'Needs Improvement';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

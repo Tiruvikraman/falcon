@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLearn - AI-Powered Education Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student_homework.css') }}">
+    
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">SmartLearn</div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for anything">
+                    <div class="ai-tools">
+                        <i class="fas fa-camera" title="Photo Question Answering"></i>
+                        <i class="fas fa-brain" title="AI Tutor"></i>
+                        <i class="fas fa-robot" title="AI Assistant"></i>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <span class="points-display">1500 pts</span>
+                    <div class="profile-icon">U</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    
+
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="{{ url_for('student') }}">Home</a></li>
+            <li><a href="{{ url_for('homework') }}">Homework</a></li>
+            <li><a href="{{ url_for('student_courses') }}">Courses</a></li>
+            <li><a href="{{ url_for('speak') }}">Speak With AI</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="main-content">
+            <h1>Homework & Assignments</h1>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Pending</button>
+                <button class="filter-btn">Completed</button>
+            </div>
+
+            <div class="homework-grid">
+                <div class="homework-item">
+                    <h3>Math Assignment: Calculus Basics</h3>
+                    <p><i class="fas fa-calendar"></i> Due: July 30, 2024</p>
+                    <p><i class="fas fa-clock"></i> Estimated time: 2 hours</p>
+                    <a href="#" class="btn">Start Assignment</a>
+                </div>
+                <div class="homework-item">
+                    <h3>Science Project: Ecosystem Model</h3>
+                    <p><i class="fas fa-calendar"></i> Due: August 5, 2024</p>
+                    <p><i class="fas fa-clock"></i> Estimated time: 4 hours</p>
+                    <a href="#" class="btn">Continue Project</a>
+                </div>
+                <div class="homework-item completed">
+                    <h3>History Essay: Industrial Revolution</h3>
+                    <p><i class="fas fa-check-circle"></i> Completed</p>
+                    <p><i class="fas fa-star"></i> Score: 95/100</p>
+                    <a href="#" class="btn">View Feedback</a>
+                </div>
+                <div class="homework-item">
+                    <h3>Language Arts: Book Report</h3>
+                    <p><i class="fas fa-calendar"></i> Due: August 10, 2024</p>
+                    <p><i class="fas fa-clock"></i> Estimated time: 3 hours</p>
+                    <a href="#" class="btn">Start Report</a>
+                </div>
+                <div class="homework-item completed">
+                    <h3>Computer Science: Python Quiz</h3>
+                    <p><i class="fas fa-check-circle"></i> Completed</p>
+                    <p><i class="fas fa-star"></i> Score: 88/100</p>
+                    <a href="#" class="btn">Review Quiz</a>
+                </div>
+                <div class="homework-item">
+                    <h3>Physics Lab: Gravity Experiment</h3>
+                    <p><i class="fas fa-calendar"></i> Due: August 15, 2024</p>
+                    <p><i class="fas fa-clock"></i> Estimated time: 2 hours</p>
+                    <a href="#" class="btn">Start Lab</a>
+                </div>
+                <!-- Add two more homework items to complete the 4x2 grid -->
+                <div class="homework-item">
+                    <h3>Chemistry: Periodic Table Quiz</h3>
+                    <p><i class="fas fa-calendar"></i> Due: August 20, 2024</p>
+                    <p><i class="fas fa-clock"></i> Estimated time: 1 hour</p>
+                    <a href="#" class="btn">Start Quiz</a>
+                </div>
+                <div class="homework-item">
+                    <h3>Art Project: Self-Portrait</h3>
+                    <p><i class="fas fa-calendar"></i> Due: August 25, 2024</p>
+                    <p><i class="fas fa-clock"></i> Estimated time: 5 hours</p>
+                    <a href="#" class="btn">Begin Project</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Simple filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const homeworkItems = document.querySelectorAll('.homework-item');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.textContent.toLowerCase();
+                
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                homeworkItems.forEach(item => {
+                    if (filter === 'all' || 
+                        (filter === 'pending' && !item.classList.contains('completed')) ||
+                        (filter === 'completed' && item.classList.contains('completed'))) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
