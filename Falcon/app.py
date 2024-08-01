@@ -8,7 +8,7 @@ from student_functions import extract_text_from_pdf,generate_ai_response,generat
 from teacher_function import convert_from_path,evaluate,extract_text_from_image,extract_text_from_pdf,generate_questions_from_text,generate_student_report,generate_timetable_module
 
 # Firebase setup
-cred = credentials.Certificate(r'C:\Users\tiruv\Downloads\Falcon\Falcon\falcon-50f06-firebase-adminsdk-no87w-d32c464aa6.json')
+cred = credentials.Certificate(r'Falcon\\falcon-50f06-firebase-adminsdk-no87w-d32c464aa6.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 AI71_API_KEY = "api71-api-df260d58-62e0-46c9-b549-62daa9c409be"
